@@ -4,3 +4,4 @@ node_modules
 **/*.type.ts
 **/*.props.ts
 **/playground.ts
+yarn.lock
