@@ -5,3 +5,4 @@ node_modules
 **/*.props.ts
 **/playground.ts
 yarn.lock
+.idea
