@@ -1,36 +1,18 @@
-import { Database, Property } from '@notionhq/client/build/src/api-types'
-import { camelCase, upperFirst } from 'lodash'
-import { access, rm, writeFile } from 'fs/promises'
-import { generateTypeName } from './Notionable/Utils'
 import path from 'path'
+import { access, rm, writeFile } from 'fs/promises'
+import { camelCase, upperFirst } from 'lodash'
+import { TypeGenerator } from './Entities'
+import { Database, Property } from './NotionClient'
+import { RichText } from '@notionhq/client/build/src/api-types'
 
-interface IDBTypeInfo {
-  typeName: string
-  typesPath: string
-  propsPath: string
-}
-
-export const generateTypeFiles = async (
+const generateTypeFiles = async (
   notionDB: Database,
   targetPath: string
-): Promise<IDBTypeInfo> => {
+): Promise<{ typeName: string }> => {
   const fileName = generateTypeName(notionDB)
-  const propsFileName = fileName + '.props.ts'
   const typesFileName = fileName + '.type.ts'
 
   const typesPath = path.join(targetPath, typesFileName)
-  const propsPath = path.join(targetPath, propsFileName)
-  console.log(typesPath)
-
-  if (await typeFileExists(propsPath)) {
-    await rm(propsPath)
-  }
-
-  await writeFile(
-    propsPath, generatePropertiesFromType(notionDB),
-    // @ts-expect-error
-    (e: string) => e && console.error('Error on props file write: ' + e)
-  )
 
   if (await typeFileExists(typesPath)) {
     await rm(typesPath)
@@ -43,35 +25,30 @@ export const generateTypeFiles = async (
   )
 
   return {
-    typeName: fileName,
-    typesPath,
-    propsPath
+    typeName: fileName
   }
 }
 
-
-const generatePropertiesFromType = (notionDB: Database): string => {
-  const { properties } = notionDB
-
-  return `export const ${generateTypeName(notionDB)}Props = {${
-    Object.keys(properties).reduce((props, key) => {
-      const separator = '\n\t'
-      return `${props}${separator}${camelCase(key)}: '${key}',`
-    }, '')
-  }\n}`.trim()
+const getPropertiesMap = (db: Database) => {
+  return Object.keys(db.properties).reduce(
+    (keys, key) => {
+      return {
+        ...keys,
+        [camelCase(key)]: key
+      }
+    }, {}
+  )
 }
 
-
-export const generateTypeFromNotionDatabase = (notionDB: Database): string => {
+const generateTypeFromNotionDatabase = (notionDB: Database): string => {
   const { properties } = notionDB
 
-  return `export type ${generateTypeName(notionDB)}Type = {${
-    Object.entries(properties)
+  return `export type ${generateTypeName(notionDB)}Type = {${Object.entries(properties)
       .map(getEntryType)
       .reduce((types, type) => {
         const separator = '\n\t'
         return `${types}${separator}${type}`
-      }, '')
+      }, '\n\tid: string')
   }\n}`.trim()
 }
 
@@ -108,7 +85,6 @@ const getEntryType = ([key, property]: [string, Property]): string => {
   return `${camelCase(key)}: ${propertyType}`
 }
 
-
 const typeFileExists = async (path: string): Promise<boolean> => {
   try {
     await access(path)
@@ -118,3 +94,20 @@ const typeFileExists = async (path: string): Promise<boolean> => {
   }
 }
 
+const generateTypeName = (db: Database): string => {
+  const dbTitle = getDatabaseTitle(db.title)
+  const typeName = upperFirst(camelCase(dbTitle.trim()))
+
+  return typeName.endsWith('s')
+    ? typeName.slice(0, -1)
+    : typeName
+}
+
+const getDatabaseTitle = (title: RichText[]): string => {
+  return title.find(title => title.type === 'text')?.plain_text ?? 'unknown'
+}
+
+export default {
+  generateTypeFiles,
+  getPropertiesMap,
+} as TypeGenerator
