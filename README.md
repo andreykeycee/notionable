@@ -31,7 +31,7 @@ Create
 ```ts
 const usersDb = await myWorkspace.getDatabase('users')
 const newUser: User = {
-	name: 'Stan'
+  name: 'Stan'
 }
 
 const savedUser = await usersDb.create(newUser) 
@@ -68,7 +68,7 @@ const userById = await usersDb.findById('d77da116-13ce-11ec-82a8-0242ac130003')
 Update
 ```ts
 const newStan: User[] = {
-	name: 'Stanly'
+  name: 'Stanly'
 }
 
 const stanly = await userDb.updateById('d77da116-13ce-11ec-82a8-0242ac130003', newStan)
@@ -91,6 +91,6 @@ const stanWasDeleted = await userDb.deleteById('d77da116-13ce-11ec-82a8-0242ac13
 const stanWasDeleted = await userDb.deleteOne(stanQuery)
 // -> true
 
-const stanWasDeleted = await userDb.bulkDelete(stanQuery)
+const stansWasDeleted = await userDb.bulkDelete(stanQuery)
 // -> true
 ```
