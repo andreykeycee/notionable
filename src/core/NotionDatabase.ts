@@ -1,5 +1,5 @@
 import {
-  DatabaseOptions,
+  DatabaseOptions, FindQuery,
   INotionDatabase,
   NotionDatabaseSettings
 } from './Entities'
@@ -7,11 +7,11 @@ import {
   Database,
   DatabasesQueryParameters,
   NotionClient,
-  Page,
-  PagesUpdateParameters
+  Page
 } from './NotionClient'
 import MapperToNotion from './MapperToNotion'
 import MapperFromNotion from './MapperFromNotion'
+import { applyQuery } from './Helper'
 
 export class NotionDatabase <
   ItemType extends { id: string }
@@ -54,7 +54,9 @@ export class NotionDatabase <
     }
   }
 
-  async find (query: DatabasesQueryParameters) {
+  async find (findQuery: FindQuery = {}) {
+    const query = applyQuery(this._dbSettings.id, findQuery)
+
     try {
       const response = await this._client.databases.query(query)
 
@@ -66,7 +68,7 @@ export class NotionDatabase <
     }
   }
 
-  async findOne (query: DatabasesQueryParameters) {
+  async findOne (query: FindQuery = {}) {
     try {
       const allResults = await this.find(query)
       return allResults?.[0]
@@ -95,7 +97,7 @@ export class NotionDatabase <
 
       const updatedPage = await this._client.pages.update({
         page_id: id,
-        properties: dataToUpdate as unknown as PagesUpdateParameters['properties'],
+        properties: dataToUpdate.properties,
         archived: false
       })
 
@@ -105,7 +107,9 @@ export class NotionDatabase <
     }
   }
 
-  async updateOne (query: DatabasesQueryParameters, input: Partial<ItemType>) {
+  async updateOne (input: Partial<ItemType>, findQuery: FindQuery = {}) {
+    const query = applyQuery(this._dbSettings.id, findQuery)
+
     try {
       const targetPage = await this.findOne(query)
 
@@ -117,7 +121,9 @@ export class NotionDatabase <
     }
   }
 
-  async bulkUpdate (query: DatabasesQueryParameters, input: Partial<ItemType>) {
+  async bulkUpdate (input: Partial<ItemType>, findQuery: FindQuery = {}) {
+    const query = applyQuery(this._dbSettings.id, findQuery)
+
     try {
       const findResults = await this.find(query)
       if (findResults) {
@@ -147,7 +153,9 @@ export class NotionDatabase <
     }
   }
 
-  async deleteOne (query: DatabasesQueryParameters) {
+  async deleteOne (findQuery: FindQuery = {}) {
+    const query = applyQuery(this._dbSettings.id, findQuery)
+
     try {
       const targetPage = await this.findOne(query)
 
@@ -159,7 +167,9 @@ export class NotionDatabase <
     }
   }
 
-  async bulkDelete (query: DatabasesQueryParameters) {
+  async bulkDelete (findQuery: FindQuery = {}) {
+    const query = applyQuery(this._dbSettings.id, findQuery)
+
     try {
       const targetPages = await this.find(query)
 

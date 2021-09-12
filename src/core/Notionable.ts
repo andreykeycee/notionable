@@ -5,8 +5,8 @@ import {
 } from './Entities'
 import TypeGenerator from './TypeGenerator'
 import { NotionWorkspace } from './NotionWorkspace'
-import { Database, NotionClient } from './NotionClient'
-import { lowerCase } from 'lodash'
+import { NotionClient } from './NotionClient'
+import { getDbTitle } from './Helper'
 
 export const Notionable: INotionable = {
 
@@ -30,15 +30,5 @@ export const Notionable: INotionable = {
     } catch (e) {
       console.error('Error on fetching Notion workspace: ', e)
     }
-  }
-}
-
-const getDbTitle = (database: Database): string => {
-  const title = database.title.find(title => title.type === 'text')
-
-  if (title) {
-    return lowerCase(title.plain_text.trim())
-  } else {
-    throw new Error('Unsupported title in database: ' + database.title)
   }
 }

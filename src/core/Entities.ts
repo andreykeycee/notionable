@@ -43,19 +43,19 @@ export interface INotionDatabase<Item extends { id: string }> {
   bulkCreate (input: Omit<Item, 'id'>[]): Promise<Item[] | undefined>
 
   /** read */
-  find (query: DatabasesQueryParameters): Promise<Item[] | undefined>
-  findOne (query: DatabasesQueryParameters): Promise<Item | undefined>
+  find (query?: FindQuery): Promise<Item[] | undefined>
+  findOne (query?: FindQuery): Promise<Item | undefined>
   findById (id: string): Promise<Item | undefined>
 
   /** update */
   updateById (id: string, input: Partial<Item>): Promise<Item | undefined>
-  updateOne (query: DatabasesQueryParameters, input: Partial<Item>): Promise<Item | undefined>
-  bulkUpdate (query: DatabasesQueryParameters, input: Partial<Item>): Promise<Item[] | undefined>
+  updateOne (input: Partial<Item>, query?: FindQuery): Promise<Item | undefined>
+  bulkUpdate (input: Partial<Item>, query?: FindQuery): Promise<Item[] | undefined>
 
   /** delete */
   deleteById (id: string): Promise<boolean | undefined>
-  deleteOne (query: DatabasesQueryParameters): Promise<boolean | undefined>
-  bulkDelete (query: DatabasesQueryParameters): Promise<boolean | undefined>
+  deleteOne (query?: FindQuery): Promise<boolean | undefined>
+  bulkDelete (query?: FindQuery): Promise<boolean | undefined>
 }
 
 export interface TypeGenerator {
@@ -89,4 +89,6 @@ export type NotionDatabaseSettings = {
     [typeName: string]: string
   }
 }
+
+export type FindQuery = Omit<DatabasesQueryParameters, 'database_id'>
 

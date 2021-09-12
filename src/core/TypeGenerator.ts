@@ -4,11 +4,13 @@ import { camelCase, upperFirst } from 'lodash'
 import { TypeGenerator } from './Entities'
 import { Database, Property } from './NotionClient'
 import { RichText } from '@notionhq/client/build/src/api-types'
+import { getDbTitle } from './Helper'
 
 const generateTypeFiles = async (
   notionDB: Database,
   targetPath: string
 ): Promise<{ typeName: string }> => {
+  console.log(notionDB)
   const fileName = generateTypeName(notionDB)
   const typesFileName = fileName + '.type.ts'
 
@@ -60,6 +62,11 @@ const getEntryType = ([key, property]: [string, Property]): string => {
     case 'title':
     case 'rich_text':
     case 'email':
+    case 'select':
+    case 'url':
+    case 'phone_number':
+    case 'created_by':
+    case 'last_edited_by':
       propertyType = 'string'
       break
 
@@ -67,22 +74,44 @@ const getEntryType = ([key, property]: [string, Property]): string => {
       propertyType = 'boolean'
       break
 
-    case 'created_by':
     case 'created_time':
     case 'last_edited_time':
-    case 'date':
       propertyType = 'Date'
+      break
+
+    case 'date':
+      propertyType = '{ start: Date, end?: Date }'
       break
 
     case 'number':
       propertyType = 'number'
       break
 
+    case 'relation':
+    case 'multi_select':
+    case 'people':
+      propertyType = 'string[]'
+      break
+
+    case 'files':
+      propertyType = '{ name: string, url: string | undefined }[]'
+      break
+
+    case 'formula':
+      propertyType = 'string | boolean | number | { start?: Date, end?: Date } | null | undefined'
+      break
+
+    case 'rollup':
+      propertyType = 'any[] | number | { start?: Date | undefined, end?: Date | undefined } | null | undefined'
+      break
+
     default:
       propertyType = 'string'
   }
 
-  return `${camelCase(key)}: ${propertyType}`
+  const propertyKey = getPropertyKey(key, property.id)
+
+  return `${propertyKey}: ${propertyType}`
 }
 
 const typeFileExists = async (path: string): Promise<boolean> => {
@@ -95,7 +124,7 @@ const typeFileExists = async (path: string): Promise<boolean> => {
 }
 
 const generateTypeName = (db: Database): string => {
-  const dbTitle = getDatabaseTitle(db.title)
+  const dbTitle = getDbTitle(db)
   const typeName = upperFirst(camelCase(dbTitle.trim()))
 
   return typeName.endsWith('s')
@@ -103,9 +132,15 @@ const generateTypeName = (db: Database): string => {
     : typeName
 }
 
-const getDatabaseTitle = (title: RichText[]): string => {
-  return title.find(title => title.type === 'text')?.plain_text ?? 'unknown'
+const getPropertyKey = (key: string, id: string) => {
+  const parsed = camelCase(key.replace(/[^\x00-\x7F]/g, ''))
+  return parsed
+    ? parsed.match(/^\d/)
+      ? `'${parsed}'`
+      : parsed
+    : `'${id}'`
 }
+
 
 export default {
   generateTypeFiles,
