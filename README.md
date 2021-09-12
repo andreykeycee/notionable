@@ -76,13 +76,13 @@ const stanly = await userDb.updateById('d77da116-13ce-11ec-82a8-0242ac130003', n
 
 const allTheStanlies = await userDb.updateOne(stanQuery, newStan)
 // -> { id: 1, name: Stanly }
-```
+
 const allTheStanlies = await userDb.bulkUpdate(stanQuery, newStan)
 // -> [
 //      { id: 'd77da116-13ce-11ec-82a8-0242ac130003' , name: 'Stanly' },
 //      { id: 'd77da116-13ce-11ec-82a8-0242ac130003' , name: 'Stanly' }
 //    ]
-
+```
 Delete
 ```ts
 const stanWasDeleted = await userDb.deleteById('d77da116-13ce-11ec-82a8-0242ac130003')
