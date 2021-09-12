@@ -1,4 +1,4 @@
-# notionable
+# Notionable
 Notionable is a general purpose package to work with Notion API. For now it contains the full CRUD methods set of Notion database that could be fetched from your integration. 
 It, also, will generate Typescript types to have a better experience with databases structure.
 ## Disclaimer
