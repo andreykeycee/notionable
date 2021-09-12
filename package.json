@@ -1,10 +1,14 @@
 {
   "name": "notionable",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andreykeycee/notionable"
   },
   "author": "Andrey Keycee",
   "license": "ISC",
