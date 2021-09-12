@@ -7,7 +7,7 @@ That tool is in the early stage of development, so it may work not as you (and I
 On first you should create an integration that have access to those databases you want to work with [here](https://www.notion.so/my-integrations).
 After you will get your integration secret key you can use it to retrieve your workspace.
 ### Retrieving the workspace
-You can easily retrieve your workspace with `fetchDatabase` method:
+You can easily retrieve your workspace with `fetchWorkspace` method:
 ```js
 import Notionable from 'notionable'
 
@@ -47,12 +47,12 @@ const moreSavedUsers = await usersDb.bulkCreate([newUser, newUser])
 Read
 ```ts
 const stanQuery= {
-	filter: { 
-		property: 'name',
-		text: {
-			contains: 'Stan'
-		} 
-	}
+  filter: { 
+    property: 'name',
+    text: {
+      contains: 'Stan'
+    } 
+  }
 }
 
 const usersNamedStan = await usersDb.find(stanQuery) 
