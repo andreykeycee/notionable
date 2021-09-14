@@ -2,7 +2,7 @@ node_modules
 .env
 
 **/*.type.ts
-**/*.props.ts
+**/dist
 playground.ts
 yarn.lock
 .idea
