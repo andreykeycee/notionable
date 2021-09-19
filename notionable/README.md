@@ -8,11 +8,12 @@ On first you should create an integration that have access to those databases yo
 After you will get your integration secret key you can use it to retrieve your workspace.
 ### Retrieving the workspace
 You can easily retrieve your workspace with `fetchWorkspace` method:
+
 ```js
-import Notionable from 'notionable'
+import Notionable from 'notionable/dist/source/index'
 
 try {
-  const myWorkspace = await Notionable.fetchWorkspace({ auth: YOUR_INTEGRATION_KEY }, './your-types-path') 
+  const myWorkspace = await Notionable.fetchWorkspace({ auth: YOUR_INTEGRATION_KEY }, './your-types-path')
   // it will also generate all database types that your integration has access to
 } catch (e) {
   console.error(e)

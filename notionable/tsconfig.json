@@ -7,9 +7,12 @@
     "esModuleInterop": true,
     "strict": true,
     "declaration": true,
-    "exclude": [
-      "node_modules",
-      "dist"
-    ]
-  }
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

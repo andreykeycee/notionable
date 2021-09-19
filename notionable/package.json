@@ -1,6 +1,6 @@
 {
   "name": "notionable",
-  "version": "0.1.4",
+  "version": "0.1.10",
   "description": "",
   "repository": {
     "type": "git",
@@ -8,8 +8,7 @@
   },
   "author": "Andrey Keycee",
   "license": "ISC",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/source",
   "prepublish": "tsc",
   "dependencies": {
     "@notionhq/client": "^0.3.1",
