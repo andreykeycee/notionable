@@ -136,7 +136,7 @@ const getFormulaValueFromNotion = (
       return value.boolean
 
     case 'date':
-      return getDateValueFromNotion(value.date)
+      return getDateValueFromNotion(value.date.date)
 
     case 'number':
       return value.number
@@ -158,7 +158,7 @@ const getRollupValueFromNotion = (
       return value.number
 
     case 'date':
-      return value.date && getDateValueFromNotion(value.date)
+      return value.date && getDateValueFromNotion(value.date.date)
   }
 }
 

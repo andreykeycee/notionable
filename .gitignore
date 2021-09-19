@@ -2,7 +2,6 @@ node_modules
 .env
 
 **/*.type.ts
-**/dist
-playground.ts
+/build
 yarn.lock
 .idea
