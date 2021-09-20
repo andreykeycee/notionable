@@ -10,7 +10,7 @@ After you will get your integration secret key you can use it to retrieve your w
 You can easily retrieve your workspace with `fetchWorkspace` method:
 
 ```js
-import Notionable from 'notionable/dist/source/index'
+import { Notionable } from 'notionable'
 
 try {
   const myWorkspace = await Notionable.fetchWorkspace({ auth: YOUR_INTEGRATION_KEY }, './your-types-path')
